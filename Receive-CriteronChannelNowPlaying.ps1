@@ -1,3 +1,5 @@
+Install-Module -Name PowerHTML
+
 function Receive-HTML {
     <#
         .SYNOPSIS
@@ -48,15 +50,41 @@ function Get-Countdown {
     }
 }
 
-Install-Module -Name PowerHTML
+function Format-Message {
+    <#
+        .SYNOPSIS
+            Constructs the message that will be displayed.
+    #>
+    [OutputType([string])]
+    param (
+        [string]$FilmTitle,
+        [string]$Countdown
+    )
+    process {
+        [string]$message = "Now Playing: $FilmTitle. `nNext film starts in: $Countdown"
+        
+        $message
+    }
+}
 
-$url = "https://whatsonnow.criterionchannel.com/"
+function Get-NowPlaying {
+    <#
+        .SYNOPSIS
+            Returns a custom object containing the current movie playing and time remaining.
+    #>
+    [OutputType([PSCustomObject])]
+    $url = "https://whatsonnow.criterionchannel.com/"
 
-$html = Receive-HTML -url $url
-$content = ConvertFrom-Html $html
+    $html = Receive-HTML -url $url
+    $content = ConvertFrom-Html $html
 
-$filmTitle = $content.SelectNodes("//h2[@class='whatson__title']")[0].innerText
-$countdown = Get-Countdown -nodes $content.SelectNodes("//span[@class='whatson__eyebrow--bold']")
+    $filmTitle = $content.SelectNodes("//h2[@class='whatson__title']")[0].innerText
+    $countdown = Get-Countdown -nodes $content.SelectNodes("//span[@class='whatson__eyebrow--bold']")
 
-$message = "Now Playing: $filmTitle. `nNext film starts in: $countdown"
-$message
+    $NowPlaying = [PSCustomObject]@{
+        Title = $filmTitle
+        Countdown = $countdown
+    }
+
+    $NowPlaying
+}
