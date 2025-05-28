@@ -50,6 +50,48 @@ function Get-Countdown {
     }
 }
 
+function Confirm-NextMovieStarted {
+    <#
+        .SYNOPSIS
+            Checks if start time for next movie has started
+    #>
+    [OutputType([bool])]
+    param (
+        [int]$StartTime
+    )
+    begin {
+        $movieStarted = $false
+    }
+    process {
+        if ($StartTime -lt [int](Get-Date -UFormat %s)) {
+            $movieStarted = $true
+        }
+
+        $movieStarted
+    }
+}
+
+function Format-NextMovieTime {
+    <#
+        .SYNOPSIS
+            Generates a unix timestamp that reflects when the next movie will start. 
+    #>
+    [OutputType([int])]
+    param (
+        [string]$Countdown
+    )
+    process {
+        # "55 minutes" -> 55
+        $minutesRemaining = $Countdown.split(' ')[0]
+
+        [int]$seconds = [int]$minutesRemaining * 60
+        [int]$currentTime = [int](Get-Date -UFormat %s)
+        [int]$startTime = $currentTime + $seconds
+
+        $startTime
+    }
+}
+
 function Format-Message {
     <#
         .SYNOPSIS
@@ -88,3 +130,7 @@ function Get-NowPlaying {
 
     $NowPlaying
 }
+
+$NowPlaying = Get-NowPlaying
+$nextMovie = Format-NextMovieTime -Countdown $NowPlaying.Countdown
+$nextMovie | Out-File NextMovieTime.txt
