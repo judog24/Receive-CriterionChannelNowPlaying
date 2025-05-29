@@ -29,7 +29,11 @@ jobs:
             AccessToken: ${{ secrets.ACCESS_TOKEN }}
 
         - name: commit
+          shell: pwsh
           run: |
-            git add .
-            git commit -m "Next start time updated"
-            git push origin main
+            $diff = git diff
+            if ($diff) {
+                git add .
+                git commit -m "Next start time updated"
+                git push origin main
+            }
