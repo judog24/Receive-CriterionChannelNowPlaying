@@ -130,3 +130,16 @@ function Get-NowPlaying {
 
     $NowPlaying
 }
+
+function Invoke-CriterionChannelNowPlaying {
+    <#
+        .SYNOPSIS
+            Generates text for the Mastodon bot to post.
+    #>
+    [OutputType([string])]
+    $nowPlaying = Get-NowPlaying
+    Format-NextMovieTime -Countdown $nowPlaying.Countdown | Out-File NextMovieTime.txt
+    $message = Format-Message -FilmTitle $nowPlaying.Title -Countdown $nowPlaying.Countdown
+
+    $message
+}
