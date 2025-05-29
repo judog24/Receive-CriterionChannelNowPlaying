@@ -130,7 +130,3 @@ function Get-NowPlaying {
 
     $NowPlaying
 }
-
-$NowPlaying = Get-NowPlaying
-$nextMovie = Format-NextMovieTime -Countdown $NowPlaying.Countdown
-$nextMovie | Out-File NextMovieTime.txt
