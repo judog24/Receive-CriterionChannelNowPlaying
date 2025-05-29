@@ -31,17 +31,5 @@ if (test-path -Path '.\config.psd1') {
     $Env:AccessToken = $Config.AccessToken
 }
 
-if (test-path -Path '.\NextMovieTime.txt') {
-    [int]$nextMovieTime = Get-Content '.\NextMovieTime.txt'
-    $nextMovieStarted = Confirm-NextMovieStarted -StartTime $nextMovieTime
-
-    if ($nextMovieStarted) {
-        $message = Invoke-CriterionChannelNowPlaying
-    }
-} else {
-    $message = Invoke-CriterionChannelNowPlaying
-}
-
-if ($message) {
-    Invoke-MastodonPost -Message $message
-}
+$message = Invoke-CriterionChannelNowPlaying
+Invoke-MastodonPost -Message $message
