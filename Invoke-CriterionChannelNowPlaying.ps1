@@ -1,3 +1,3 @@
-Import-Module .\Receive-CriteronChannelNowPlaying.psm1 -Force
+Import-Module .\Receive-CriterionChannelNowPlaying.psm1 -Force
 
 Invoke-CriterionChannelNowPlaying
