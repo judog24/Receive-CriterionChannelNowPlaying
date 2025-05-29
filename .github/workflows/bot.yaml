@@ -1,0 +1,34 @@
+name: Mastodon Bot
+on:
+    schedule:
+        - cron: "0 * * * *"
+
+jobs:
+    build:
+      name: Run Script
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v1
+
+        - name: Install modules
+          run: |
+            Install-Module -Name PowerHTML -Force
+          shell: pwsh
+
+        - name: setup git config
+          run: |
+            git config user.name 'github-actions[bot]'
+            git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+        - name: Post
+          run: .\Invoke-MastodonBot.ps1
+          shell: pwsh
+          env:
+            MastodonInstance: ${{ secrets.MASTODON_INSTANCE }}
+            AccessToken: ${{ secrets.ACCESS_TOKEN }}
+
+        - name: commit
+          run: |
+            git add .
+            git commit -m "Next start time updated"
+            git push origin main
